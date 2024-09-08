@@ -16,19 +16,31 @@ class ItemsViewModel @Inject constructor(private val itemRepository: ItemReposit
     private val _items = MutableStateFlow<List<Item>>(emptyList())
     val items = _items.asStateFlow()
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
+
     init {
         fetchItems()
     }
 
-    private fun fetchItems(){
+    private fun fetchItems() {
         viewModelScope.launch {
-            val response = itemRepository.getItems()
-            if(response.isSuccessful){
-                response.body()?.let { itemsList ->
-                    _items.value = itemsList.filter { item -> item.name?.isNotEmpty() == true }
-                        .sortedWith(compareBy<Item> {it.listId}.thenBy { it.name })
+            try {
+                val response = itemRepository.getItems()
+                if (response.isSuccessful) {
+                    response.body()?.let { itemsList ->
+                        _items.value = itemsList.filter { item -> item.name?.isNotEmpty() == true }
+                    }
+                } else {
+                    _errorMessage.value = "Error: ${response.code()} - ${response.message()}"
                 }
+            } catch (e: Exception) {
+                _errorMessage.value = "An error occurred: ${e.localizedMessage}"
             }
         }
+    }
+
+    fun clearError() {
+        _errorMessage.value = null
     }
 }

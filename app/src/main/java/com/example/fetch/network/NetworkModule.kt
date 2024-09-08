@@ -20,4 +20,9 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+    @Provides
+    @Singleton
+    fun provideItemsApiService(retrofit: Retrofit): ItemsApiService =
+        retrofit.create(ItemsApiService::class.java)
+
 }
