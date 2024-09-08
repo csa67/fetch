@@ -1,4 +1,4 @@
-package com.example.fetch
+package com.example.fetch.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
