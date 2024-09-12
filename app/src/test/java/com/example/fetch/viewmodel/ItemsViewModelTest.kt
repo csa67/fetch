@@ -1,20 +1,25 @@
 package com.example.fetch.viewmodel
 
-import android.text.style.LineBackgroundSpan.Standard
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.fetch.model.Item
 import com.example.fetch.repository.ItemRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
@@ -97,7 +102,7 @@ class ItemsViewModelTest {
     @Test
     fun `clearError should reset errorMessage to null`() = runTest {
         // Arrange: Set an initial error message
-        viewModel._errorMessage.value = "Error message"
+        viewModel.setErrorMessage("Error message")
 
         // Act: Call clearError() in the ViewModel
         viewModel.clearError()

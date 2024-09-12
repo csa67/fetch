@@ -16,7 +16,7 @@ class ItemsViewModel @Inject constructor(private val itemRepository: ItemReposit
     private val _items = MutableStateFlow<List<Item>>(emptyList())
     val items = _items.asStateFlow()
 
-    val _errorMessage = MutableStateFlow<String?>(null)
+    private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
 
     init {
@@ -32,15 +32,19 @@ class ItemsViewModel @Inject constructor(private val itemRepository: ItemReposit
                         _items.value = itemsList.filter { item -> item.name?.isNotEmpty() == true }
                     }
                 } else {
-                    _errorMessage.value = "Error: ${response.code()} - ${response.message() ?: "Unknown error"}"
+                    setErrorMessage("Error: ${response.code()} - ${response.message() ?: "Unknown error"}")
                 }
             } catch (e: Exception) {
-                _errorMessage.value = "An error occurred: ${e.localizedMessage}"
+                setErrorMessage("An error occurred: ${e.localizedMessage}")
             }
         }
     }
 
     fun clearError() {
         _errorMessage.value = null
+    }
+
+    fun setErrorMessage(message: String) {
+        _errorMessage.value = message
     }
 }
